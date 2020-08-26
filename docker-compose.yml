@@ -1,0 +1,18 @@
+version: "3.6"
+
+services: 
+    db:
+        image: mysql:5.7
+        command: --default-authentication-plugin=mysql_native_password
+        ports: 
+            - "3306:3306"
+        volumes: 
+            - type: volume
+              source: database
+              target: /var/lib/mysql
+        environment: 
+            - MYSQL_ROOT_PASSWORD=my-secret-pw
+            - MYSQL_DATABASE=projects
+
+volumes: 
+    database: 
