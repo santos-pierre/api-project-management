@@ -50,6 +50,10 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+        if ($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
+            return response(['error' => 'not found', 'error_message' => 'Please check the URL you submitted'], 404);
+        }
+
         return parent::render($request, $exception);
     }
 }

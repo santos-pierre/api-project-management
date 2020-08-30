@@ -1,6 +1,10 @@
 <?php
 
+use App\User;
+use App\Project;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Route;
+use App\Http\Resources\ProjectResource;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,3 +24,11 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/project', function () {
+    return ProjectResource::collection(Project::all());
+});
+
+Route::get('/user', function () {
+    return UserResource::collection(User::all());
+});
