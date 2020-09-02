@@ -19,7 +19,7 @@ $factory->define(Project::class, function (Faker $faker) {
             return factory(User::class)->create()->id;
         },
         'description' => $faker->text,
-        'deadline' => Carbon::now()->addDay(3),
+        'deadline' => Carbon::now()->addDay(3)->format('Y-m-d'),
         'repository_url' => $faker->url,
         'status_project_id' => function () {
             return StatusProject::all()->pluck('id')->random();

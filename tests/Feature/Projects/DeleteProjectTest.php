@@ -1,0 +1,55 @@
+<?php
+
+use App\Project;
+use App\User;
+use Laravel\Sanctum\Sanctum;
+
+beforeEach(function () {
+    $this->artisan('migrate:fresh --seed');
+    $this->user = factory(User::class)->create();
+    $this->projects = Project::all();
+});
+
+test('Guest cannot delete project', function () {
+    $response = $this->withHeaders([
+        'Accept' => 'application/json'
+    ])->delete(route('projects.destroy', $this->projects->first()->id));
+
+    $response
+        ->assertStatus(401)
+        ->assertJSon([
+            'message' => 'Unauthenticated.'
+        ]);
+});
+
+test('User can delete a project', function () {
+    Sanctum::actingAs(
+        $this->user,
+        ['*']
+    );
+
+    $response = $this->withHeaders([
+        'Accept' => 'application/json'
+    ])->delete(route('projects.destroy', $this->projects->first()->id));
+
+    $response
+        ->assertStatus(200)
+        ->assertExactJson(['message' => 'Successfully deleted']);
+
+    $this->assertDeleted('projects', ['id' => $this->projects->first()->id]);
+});
+
+test('User cannot delete an unexisting project', function () {
+    Sanctum::actingAs(
+        $this->user,
+        ['*']
+    );
+
+    $response = $this->withHeaders([
+        'Accept' => 'application/json'
+    ])->delete(route('projects.destroy', 566327637));
+
+    $response
+        ->assertStatus(404)
+        ->assertExactJson(['error' => 'not found', 'error_message' => 'Please check the URL you submitted']);
+});

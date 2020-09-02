@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Project;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Http\Resources\ProjectResource;
 
 class ProjectController extends Controller
@@ -54,7 +55,7 @@ class ProjectController extends Controller
      */
     public function update(Request $request, Project $project)
     {
-        $validatedData = $request->validate($this->rules());
+        $validatedData = $request->validate($this->rules($project));
         $validatedData['slug'] = Str::of($validatedData['title'])->slug('-')->__toString();
         $project->update($validatedData);
 
@@ -71,7 +72,7 @@ class ProjectController extends Controller
     {
         $project->delete();
 
-        return response(["message" => "Successfully deleted"], 200);
+        return response(['message' => 'Successfully deleted'], 200);
     }
 
     /**
@@ -79,10 +80,10 @@ class ProjectController extends Controller
      *
      * @return array
      */
-    private function rules()
+    private function rules($project = null)
     {
         return [
-            'title' => 'required|unique:projects|max:255',
+            'title' => ['required', 'string', $project ? Rule::unique('projects')->ignore($project->id) : 'unique:projects', 'max:255'],
             'description' => 'nullable',
             'deadline' => 'nullable',
             'repository_url' => 'nullable|url',
