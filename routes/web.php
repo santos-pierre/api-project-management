@@ -3,8 +3,10 @@
 use App\User;
 use App\Project;
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Resources\ProjectResource;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -32,3 +34,5 @@ Route::get('/project', function () {
 Route::get('/user', function () {
     return UserResource::collection(User::all());
 });
+
+Route::post('/register', 'RegisterUserController');

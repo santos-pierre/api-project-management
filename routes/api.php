@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,9 +16,13 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+    return new UserResource($request->user());
 });
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('projects','ProjectController');
+    Route::apiResource('projects', 'ProjectController');
+});
+
+Route::middleware('api')->get('/register', function () {
+    return 'hello';
 });
