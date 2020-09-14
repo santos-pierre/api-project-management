@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,8 +21,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('projects', 'ProjectController');
-});
-
-Route::middleware('api')->get('/register', function () {
-    return 'hello';
 });

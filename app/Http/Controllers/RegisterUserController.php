@@ -15,7 +15,7 @@ class RegisterUserController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
         ]);
-
+        $data['password'] = bcrypt($data['password']);
         $newUser = User::create($data);
 
         return response(new UserResource($newUser), 201);

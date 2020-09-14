@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Resources\ProjectResource;
 
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -35,4 +34,5 @@ Route::get('/user', function () {
     return UserResource::collection(User::all());
 });
 
+Route::post('/user/exist/email', 'FindUserByEmailController');
 Route::post('/register', 'RegisterUserController');
