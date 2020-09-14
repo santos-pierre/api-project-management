@@ -1,28 +1,43 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
-use App\User;
-use App\Project;
-use Carbon\Carbon;
-use App\StatusProject;
+use App\Models\Project;
+use App\Models\StatusProject;
+use App\Models\User;
 use Illuminate\Support\Str;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Project::class, function (Faker $faker) {
-    $title = $faker->sentence(4);
-    $slug = Str::of($title)->slug('-')->__toString();
-    return [
-        'slug' => $slug,
-        'title' => $title,
-        'author' => function () {
-            return factory(User::class)->create()->id;
-        },
-        'description' => $faker->text,
-        'deadline' => Carbon::now()->addDay(3)->format('Y-m-d'),
-        'repository_url' => $faker->url,
-        'status_project_id' => function () {
-            return StatusProject::all()->pluck('id')->random();
-        },
-    ];
-});
+class ProjectFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Project::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        $title = $this->faker->sentence(4);
+        $slug = Str::of($title)->slug('-')->__toString();
+        return [
+            'slug' => $slug,
+            'title' => $title,
+            'author' => function () {
+                return User::factory()->create()->id;
+            },
+            'description' => $this->faker->text,
+            'deadline' => now()->addDay(3)->format('Y-m-d'),
+            'repository_url' => $this->faker->url,
+            'status_project_id' => function () {
+                return StatusProject::all()->pluck('id')->random();
+            },
+        ];
+    }
+}

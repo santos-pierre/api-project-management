@@ -1,6 +1,8 @@
 <?php
 
-use App\StatusProject;
+namespace Database\Seeders;
+
+use App\Models\StatusProject;
 use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 
@@ -21,7 +23,7 @@ class StatusProjectSeeder extends Seeder
         ];
 
         foreach ($status_project as $status) {
-            factory(StatusProject::class)->create([
+            StatusProject::factory()->create([
                 'name' => $status,
                 'slug' => Str::of($status)->slug('-')->__toString(),
             ]);

@@ -1,13 +1,13 @@
 <?php
 
-use App\Project;
-use App\User;
+use App\Models\Project;
+use App\Models\User;
 use Laravel\Sanctum\Sanctum;
 
 beforeEach(function () {
     $this->artisan('migrate:fresh --seed');
-    $this->user = factory(User::class)->create();
-    $this->project = $this->user->projects()->create(factory(Project::class)->raw());
+    $this->user = User::factory()->create();
+    $this->project = $this->user->projects()->create(Project::factory()->raw());
 });
 
 test('Guest cannot access projects', function () {

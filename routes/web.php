@@ -1,6 +1,6 @@
 <?php
 
-use App\User;
+use App\Models\User;
 use App\Project;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;

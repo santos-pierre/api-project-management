@@ -1,14 +1,32 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
-use App\StatusProject;
-use Faker\Generator as Faker;
+use App\Models\StatusProject;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
-$factory->define(StatusProject::class, function (Faker $faker) {
-    $name = $faker->word;
-    return [
-        'slug' => $name,
-        'name' => $name
-    ];
-});
+class StatusProjectFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = StatusProject::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        $name = $this->faker->word;
+        $slug = Str::of($name)->slug('-')->__toString();
+        return [
+            'name' => $name,
+            'slug' => $slug
+        ];
+    }
+}

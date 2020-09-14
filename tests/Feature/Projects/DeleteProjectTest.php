@@ -1,12 +1,12 @@
 <?php
 
-use App\Project;
-use App\User;
+use App\Models\Project;
+use App\Models\User;
 use Laravel\Sanctum\Sanctum;
 
 beforeEach(function () {
     $this->artisan('migrate:fresh --seed');
-    $this->user = factory(User::class)->create();
+    $this->user = User::factory()->create();
     $this->projects = Project::all();
 });
 

@@ -1,5 +1,8 @@
 <?php
 
+namespace Database\Seeders;
+
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -11,7 +14,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        factory('App\User')->create(['email' => 'admin@admin.com']);
+        User::factory()->create(['email' => 'admin@admin.com']);
         $this->call([
             StatusProjectSeeder::class,
             ProjectSeeder::class

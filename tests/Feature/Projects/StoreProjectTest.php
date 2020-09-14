@@ -1,8 +1,8 @@
 <?php
 
-use App\Project;
-use App\StatusProject;
-use App\User;
+use App\Models\Project;
+use App\Models\StatusProject;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\Sanctum;
@@ -11,11 +11,11 @@ use function Pest\Faker\faker;
 beforeEach(function () {
     $this->artisan('migrate:fresh --seed');
     $this->status = StatusProject::find(2);
-    $this->user = factory(User::class)->create();
-    $this->project = $this->user->projects()->create(factory(Project::class)->raw(['title' => 'My awesome Title', 'status_project_id' => 2]));
-    $this->projectData = factory(Project::class)->raw(['status_project_id' => 2]);
+    $this->user = User::factory()->create();
+    $this->project = $this->user->projects()->create(Project::factory()->raw(['title' => 'My awesome Title', 'status_project_id' => 2]));
+    $this->projectData = Project::factory()->raw(['status_project_id' => 2]);
 
-    $this->projectToUpdate = $this->user->projects()->create(factory(Project::class)->raw(['status_project_id' => 2]));
+    $this->projectToUpdate = $this->user->projects()->create(Project::factory()->raw(['status_project_id' => 2]));
 });
 
 test('Guest cannot create projects', function () {
@@ -171,7 +171,7 @@ test('User cannot create a new project with an already existing title', function
         ['*']
     );
 
-    $newProject = factory(Project::class)->raw(['title' => 'My awesome Title', 'status_project_id' => 2]);
+    $newProject = Project::factory()->raw(['title' => 'My awesome Title', 'status_project_id' => 2]);
 
     $response = $this->withHeaders([
         'Accept' => 'application/json'
@@ -193,7 +193,7 @@ test('User cannot create a new project without a title', function () {
         ['*']
     );
 
-    $newProject = factory(Project::class)->raw(['title' => '', 'status_project_id' => 2]);
+    $newProject = Project::factory()->raw(['title' => '', 'status_project_id' => 2]);
 
     $response = $this->withHeaders([
         'Accept' => 'application/json'
@@ -215,7 +215,7 @@ test('User cannot create a new project with a title that exceed 255 characters',
         ['*']
     );
 
-    $newProject = factory(Project::class)->raw(['title' => Str::random(300), 'status_project_id' => 2]);
+    $newProject = Project::factory()->raw(['title' => Str::random(300), 'status_project_id' => 2]);
 
     $response = $this->withHeaders([
         'Accept' => 'application/json'
@@ -237,7 +237,7 @@ test('User cannot create a new project without status project', function () {
         ['*']
     );
 
-    $newProject = factory(Project::class)->raw(['status_project_id' => '']);
+    $newProject = Project::factory()->raw(['status_project_id' => '']);
 
     $response = $this->withHeaders([
         'Accept' => 'application/json'
@@ -259,7 +259,7 @@ test('User cannot create a new project with an invalid url for the repository', 
         ['*']
     );
 
-    $newProject = factory(Project::class)->raw(['repository_url' => 'not an url']);
+    $newProject = Project::factory()->raw(['repository_url' => 'not an url']);
 
     $response = $this->withHeaders([
         'Accept' => 'application/json'
@@ -283,7 +283,7 @@ test('User cannot update with an already existing title', function () {
         ['*']
     );
 
-    $newProject = factory(Project::class)->raw(['title' => 'My awesome Title', 'status_project_id' => 2]);
+    $newProject = Project::factory()->raw(['title' => 'My awesome Title', 'status_project_id' => 2]);
 
     $response = $this->withHeaders([
         'Accept' => 'application/json'
@@ -305,7 +305,7 @@ test('User cannot update without a title', function () {
         ['*']
     );
 
-    $newProject = factory(Project::class)->raw(['title' => '', 'status_project_id' => 2]);
+    $newProject = Project::factory()->raw(['title' => '', 'status_project_id' => 2]);
 
     $response = $this->withHeaders([
         'Accept' => 'application/json'
@@ -327,7 +327,7 @@ test('User cannot update with a title that exceed 255 characters', function () {
         ['*']
     );
 
-    $newProject = factory(Project::class)->raw(['title' => Str::random(300), 'status_project_id' => 2]);
+    $newProject = Project::factory()->raw(['title' => Str::random(300), 'status_project_id' => 2]);
 
     $response = $this->withHeaders([
         'Accept' => 'application/json'
@@ -349,7 +349,7 @@ test('User cannot update without status project', function () {
         ['*']
     );
 
-    $newProject = factory(Project::class)->raw(['status_project_id' => '']);
+    $newProject = Project::factory()->raw(['status_project_id' => '']);
 
     $response = $this->withHeaders([
         'Accept' => 'application/json'
@@ -371,7 +371,7 @@ test('User cannot update with an invalid url for the repository', function () {
         ['*']
     );
 
-    $newProject = factory(Project::class)->raw(['repository_url' => 'not an url']);
+    $newProject = Project::factory()->raw(['repository_url' => 'not an url']);
 
     $response = $this->withHeaders([
         'Accept' => 'application/json'
