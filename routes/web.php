@@ -1,11 +1,13 @@
 <?php
 
 use App\Models\User;
-use App\Project;
+use App\Models\Project;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Resources\ProjectResource;
+use App\Http\Resources\TaskResource;
+use App\Models\Task;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +34,14 @@ Route::get('/project', function () {
 
 Route::get('/user', function () {
     return UserResource::collection(User::all());
+});
+
+Route::get('/tasks', function () {
+    return TaskResource::collection(Task::all());
+});
+
+Route::get('/task', function () {
+    return new TaskResource(Task::find(1));
 });
 
 Route::post('/user/exist/email', 'FindUserByEmailController');
