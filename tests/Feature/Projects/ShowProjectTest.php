@@ -25,7 +25,7 @@ test('Guest cannot access projects', function () {
 test('Guest cannot retrieve a single project', function () {
     $response = $this->withHeaders([
         'Accept' => 'application/json'
-    ])->get(route('projects.show', $this->project->id));
+    ])->get(route('projects.show', $this->project->slug));
 
     $response
         ->assertStatus(401)
@@ -46,7 +46,7 @@ test('User can retrieve his projects', function () {
 
     $response
         ->assertStatus(200)
-        ->assertJsonStructure(['data']);
+        ->assertJsonCount(1);
 });
 
 test('User can retrieve a single project', function () {
@@ -57,7 +57,7 @@ test('User can retrieve a single project', function () {
 
     $response = $this->withHeaders([
         'Accept' => 'application/json'
-    ])->get(route('projects.show', $this->project->id));
+    ])->get(route('projects.show', $this->project->slug));
 
     $response->assertOk();
 });

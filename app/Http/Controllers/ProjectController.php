@@ -17,7 +17,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        return ProjectResource::collection(auth()->user()->projects);
+        return response(ProjectResource::collection(auth()->user()->projects()->orderBy('created_at', 'desc')->get()));
     }
 
     /**
@@ -29,7 +29,7 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate($this->rules());
-        $validatedData['slug'] = Str::of($validatedData['title'])->slug('-')->__toString();
+        $validatedData['slug'] = Str::of($validatedData['title'])->slug('-')->append('-' . now()->format('Y-m-d') . '-' . Str::of(auth()->user()->name)->slug('-')->__toString())->__toString();
         $newProject = auth()->user()->projects()->create($validatedData);
 
         return response(new ProjectResource($newProject), 201);
@@ -43,7 +43,7 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        return new ProjectResource($project);
+        return response(new ProjectResource($project));
     }
 
     /**
@@ -56,7 +56,7 @@ class ProjectController extends Controller
     public function update(Request $request, Project $project)
     {
         $validatedData = $request->validate($this->rules($project));
-        $validatedData['slug'] = Str::of($validatedData['title'])->slug('-')->__toString();
+        $validatedData['slug'] = Str::of($validatedData['title'])->slug('-')->append('-' . now()->format('Y-m-d') . '-' . Str::of(auth()->user()->name)->slug('-')->__toString())->__toString();
         $project->update($validatedData);
 
         return response(new ProjectResource($project), 200);
@@ -83,7 +83,9 @@ class ProjectController extends Controller
     private function rules($project = null)
     {
         return [
-            'title' => ['required', 'string', $project ? Rule::unique('projects')->ignore($project->id) : 'unique:projects', 'max:255'],
+            'title' => ['required', 'string', $project ? Rule::unique('projects')->ignore($project->id) : Rule::unique('projects')->where(function ($query) {
+                return $query->where('author', auth()->user()->id);
+            }), 'max:255'],
             'description' => 'nullable',
             'deadline' => 'nullable',
             'repository_url' => 'nullable|url',

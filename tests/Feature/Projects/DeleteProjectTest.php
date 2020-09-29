@@ -13,7 +13,7 @@ beforeEach(function () {
 test('Guest cannot delete project', function () {
     $response = $this->withHeaders([
         'Accept' => 'application/json'
-    ])->delete(route('projects.destroy', $this->projects->first()->id));
+    ])->delete(route('projects.destroy', $this->projects->first()->slug));
 
     $response
         ->assertStatus(401)
@@ -30,13 +30,13 @@ test('User can delete a project', function () {
 
     $response = $this->withHeaders([
         'Accept' => 'application/json'
-    ])->delete(route('projects.destroy', $this->projects->first()->id));
+    ])->delete(route('projects.destroy', $this->projects->first()->slug));
 
     $response
         ->assertStatus(200)
         ->assertExactJson(['message' => 'Successfully deleted']);
 
-    $this->assertDeleted('projects', ['id' => $this->projects->first()->id]);
+    $this->assertDeleted('projects', ['slug' => $this->projects->first()->slug]);
 });
 
 test('User cannot delete an unexisting project', function () {

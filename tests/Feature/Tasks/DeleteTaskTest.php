@@ -19,7 +19,7 @@ test('guest cannot delete a task from a project', function () {
 
     $response = $this->withHeaders([
         'Accept' => 'application/json'
-    ])->delete(route('tasks.destroy', [$this->userProject->id, $this->tasksUserForProject->first()->id]), $this->newTaskData);
+    ])->delete(route('tasks.destroy', [$this->userProject->slug, $this->tasksUserForProject->first()->id]), $this->newTaskData);
 
     $response
         ->assertStatus(401)
@@ -36,7 +36,7 @@ test('user can delete a task from a project', function () {
 
     $response = $this->withHeaders([
         'Accept' => 'application/json'
-    ])->delete(route('tasks.destroy', [$this->userProject->id, $this->tasksUserForProject->first()->id]), $this->newTaskData);
+    ])->delete(route('tasks.destroy', [$this->userProject->slug, $this->tasksUserForProject->first()->id]), $this->newTaskData);
 
     $response
         ->assertStatus(200)
@@ -53,7 +53,7 @@ test('user cannot delete an unexisting task from a project', function () {
 
     $response = $this->withHeaders([
         'Accept' => 'application/json'
-    ])->delete(route('tasks.destroy', [$this->userProject->id, 55152515]), $this->newTaskData);
+    ])->delete(route('tasks.destroy', [$this->userProject->slug, 55152515]), $this->newTaskData);
 
     $response
         ->assertStatus(404)

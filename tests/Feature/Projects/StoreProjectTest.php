@@ -43,7 +43,7 @@ test('User can create a new project', function () {
     $response
         ->assertStatus(201)
         ->assertJson([
-            'slug' => $this->projectData['slug'],
+            'slug' => Str::of($this->projectData['slug'])->slug('-')->append('-' . now()->format('Y-m-d') . '-' . Str::of(auth()->user()->name)->slug('-')->__toString())->__toString(),
             'title' => Str::of($this->projectData['title'])->title()->__toString(),
             'author' => $this->user->name,
             'description' => $this->projectData['description'],
@@ -65,12 +65,12 @@ test('User can update a project title', function () {
 
     $response = $this->withHeaders([
         'Accept' => 'application/json'
-    ])->patch(route('projects.update', $this->projectToUpdate->id), $dataToUpdate);
+    ])->patch(route('projects.update', $this->projectToUpdate->slug), $dataToUpdate);
 
     $response
         ->assertStatus(200)
         ->assertJson([
-            'slug' => Str::of($dataToUpdate['title'])->slug()->__toString(),
+            'slug' => Str::of($dataToUpdate['title'])->slug('-')->append('-' . now()->format('Y-m-d') . '-' . Str::of(auth()->user()->name)->slug('-')->__toString())->__toString(),
             'title' => Str::of($dataToUpdate['title'])->title()->__toString(),
             'author' => $this->user->name,
             'description' => $dataToUpdate['description'],
@@ -92,12 +92,12 @@ test('User can update a project deadline', function () {
 
     $response = $this->withHeaders([
         'Accept' => 'application/json'
-    ])->patch(route('projects.update', $this->projectToUpdate->id), $dataToUpdate);
+    ])->patch(route('projects.update', $this->projectToUpdate->slug), $dataToUpdate);
 
     $response
         ->assertStatus(200)
         ->assertJson([
-            'slug' => Str::of($dataToUpdate['title'])->slug()->__toString(),
+            'slug' => Str::of($dataToUpdate['title'])->slug('-')->append('-' . now()->format('Y-m-d') . '-' . Str::of(auth()->user()->name)->slug('-')->__toString())->__toString(),
             'title' => Str::of($dataToUpdate['title'])->title()->__toString(),
             'author' => $this->user->name,
             'description' => $dataToUpdate['description'],
@@ -119,12 +119,12 @@ test('User can update a project description', function () {
 
     $response = $this->withHeaders([
         'Accept' => 'application/json'
-    ])->patch(route('projects.update', $this->projectToUpdate->id), $dataToUpdate);
+    ])->patch(route('projects.update', $this->projectToUpdate->slug), $dataToUpdate);
 
     $response
         ->assertStatus(200)
         ->assertJson([
-            'slug' => Str::of($dataToUpdate['title'])->slug()->__toString(),
+            'slug' => Str::of($dataToUpdate['title'])->slug('-')->append('-' . now()->format('Y-m-d') . '-' . Str::of(auth()->user()->name)->slug('-')->__toString())->__toString(),
             'title' => Str::of($dataToUpdate['title'])->title()->__toString(),
             'author' => $this->user->name,
             'description' => $dataToUpdate['description'],
@@ -146,12 +146,12 @@ test('User can update a project repository_url', function () {
 
     $response = $this->withHeaders([
         'Accept' => 'application/json'
-    ])->patch(route('projects.update', $this->projectToUpdate->id), $dataToUpdate);
+    ])->patch(route('projects.update', $this->projectToUpdate->slug), $dataToUpdate);
 
     $response
         ->assertStatus(200)
         ->assertJson([
-            'slug' => Str::of($dataToUpdate['title'])->slug()->__toString(),
+            'slug' => Str::of($dataToUpdate['title'])->slug('-')->append('-' . now()->format('Y-m-d') . '-' . Str::of(auth()->user()->name)->slug('-')->__toString())->__toString(),
             'title' => Str::of($dataToUpdate['title'])->title()->__toString(),
             'author' => $this->user->name,
             'description' => $dataToUpdate['description'],

@@ -11,6 +11,11 @@ class Project extends Model
 
     protected $fillable = ['title', 'deadline', 'slug', 'description', 'repository_url', 'status_project_id'];
 
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
     // Eloquent Relation
     public function status()
     {

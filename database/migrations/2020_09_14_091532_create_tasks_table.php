@@ -18,8 +18,8 @@ class CreateTasksTable extends Migration
             $table->string('slug')->unique();
             $table->string('body', 255);
             $table->boolean('done')->default(false);
-            $table->foreignId('author')->constrained('users');
-            $table->foreignId('project_id')->constrained('projects');
+            $table->foreignId('author')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('project_id')->constrained('projects')->cascadeOnDelete();
             $table->timestamps();
         });
     }

@@ -18,7 +18,7 @@ beforeEach(function () {
 test('guest cannot retrieve tasks from a project', function () {
     $response = $this->withHeaders([
         'Accept' => 'application/json'
-    ])->get(route('tasks.index', $this->project->id));
+    ])->get(route('tasks.index', $this->project->slug));
 
     $response
         ->assertStatus(401)
@@ -30,7 +30,7 @@ test('guest cannot retrieve tasks from a project', function () {
 test('guest cannot retrieve a single tasks from a project', function () {
     $response = $this->withHeaders([
         'Accept' => 'application/json'
-    ])->get(route('tasks.show', [$this->project->id, $this->tasks->first()->id]));
+    ])->get(route('tasks.show', [$this->project->slug, $this->tasks->first()->id]));
 
     $response
         ->assertStatus(401)
@@ -47,7 +47,7 @@ test('User can retrieve tasks from a project', function () {
 
     $response = $this->withHeaders([
         'Accept' => 'application/json'
-    ])->get(route('tasks.index', $this->userProject->id));
+    ])->get(route('tasks.index', $this->userProject->slug));
 
     $response
         ->assertStatus(200)
@@ -62,7 +62,7 @@ test('User can retrieve a single task from a project', function () {
 
     $response = $this->withHeaders([
         'Accept' => 'application/json'
-    ])->get(route('tasks.show', [$this->userProject->id, $this->tasksUserForProject->first()->id]));
+    ])->get(route('tasks.show', [$this->userProject->slug, $this->tasksUserForProject->first()->id]));
 
     $response
         ->assertStatus(200)

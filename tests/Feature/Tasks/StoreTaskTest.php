@@ -19,7 +19,7 @@ beforeEach(function () {
 test('guest cannot create a task for a project', function () {
     $response = $this->withHeaders([
         'Accept' => 'application/json'
-    ])->post(route('tasks.store', [$this->userProject->id]), $this->newTaskData);
+    ])->post(route('tasks.store', [$this->userProject->slug]), $this->newTaskData);
 
     $response
         ->assertStatus(401)
@@ -35,7 +35,7 @@ test('user can create a task for a project', function () {
     );
     $response = $this->withHeaders([
         'Accept' => 'application/json'
-    ])->post(route('tasks.store', [$this->userProject->id]), $this->newTaskData);
+    ])->post(route('tasks.store', [$this->userProject->slug]), $this->newTaskData);
 
     $response
         ->assertStatus(201)
@@ -70,7 +70,7 @@ test('user cannot create a task without a body', function () {
 
     $response = $this->withHeaders([
         'Accept' => 'application/json'
-    ])->post(route('tasks.store', [$this->userProject->id]), $newTask);
+    ])->post(route('tasks.store', [$this->userProject->slug]), $newTask);
 
 
     $response
@@ -93,7 +93,7 @@ test('user cannot create a task with a body bigger than 255 characters', functio
 
     $response = $this->withHeaders([
         'Accept' => 'application/json'
-    ])->post(route('tasks.store', [$this->userProject->id]), $newTask);
+    ])->post(route('tasks.store', [$this->userProject->slug]), $newTask);
 
 
     $response
@@ -110,7 +110,7 @@ test('user cannot create a task with a body bigger than 255 characters', functio
 test('guest cannot update a task', function () {
     $response = $this->withHeaders([
         'Accept' => 'application/json'
-    ])->patch(route('tasks.update', [$this->userProject->id, $this->tasksUserForProject->first()->id]), ['body' => 'hey', 'done' => true]);
+    ])->patch(route('tasks.update', [$this->userProject->slug, $this->tasksUserForProject->first()->id]), ['body' => 'hey', 'done' => true]);
 
     $response
         ->assertStatus(401)
@@ -127,7 +127,7 @@ test('user can update a task', function () {
 
     $response = $this->withHeaders([
         'Accept' => 'application/json'
-    ])->patch(route('tasks.update', [$this->userProject->id, $this->tasksUserForProject->first()->id]), ['body' => 'hey', 'done' => true]);
+    ])->patch(route('tasks.update', [$this->userProject->slug, $this->tasksUserForProject->first()->id]), ['body' => 'hey', 'done' => true]);
 
     $response
         ->assertStatus(200)
@@ -161,7 +161,7 @@ test('user cannot update a task without a body', function () {
 
     $response = $this->withHeaders([
         'Accept' => 'application/json'
-    ])->patch(route('tasks.update', [$this->userProject->id, $this->tasksUserForProject->first()->id]), ['body' => '', 'done' => true]);
+    ])->patch(route('tasks.update', [$this->userProject->slug, $this->tasksUserForProject->first()->id]), ['body' => '', 'done' => true]);
 
     $response
         ->assertStatus(422)
