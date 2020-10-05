@@ -15,7 +15,7 @@ class CreateTasksTable extends Migration
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
-            $table->string('slug')->unique();
+            $table->string('slug');
             $table->string('body', 255);
             $table->boolean('done')->default(false);
             $table->foreignId('author')->constrained('users')->cascadeOnDelete();

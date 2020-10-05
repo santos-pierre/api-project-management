@@ -19,7 +19,7 @@ class StatusProjectSeeder extends Seeder
             'done',
             'pending',
             'late',
-            'give up'
+            'give_up'
         ];
 
         foreach ($status_project as $status) {

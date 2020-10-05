@@ -18,7 +18,7 @@ class TaskController extends Controller
      */
     public function index(Project $project)
     {
-        return TaskResource::collection($project->tasks);
+        return response(TaskResource::collection($project->tasks));
     }
 
     /**
@@ -45,7 +45,7 @@ class TaskController extends Controller
      */
     public function show(Project $project, Task $task)
     {
-        return new TaskResource($task);
+        return response(new TaskResource($task));
     }
 
     /**

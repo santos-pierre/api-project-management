@@ -21,6 +21,7 @@ class TaskResource extends JsonResource
             'owner' => new UserResource($this->owner),
             'project' => new ProjectResource($this->project),
             'done' => (bool) $this->done,
+            'id' => $this->id
         ];
     }
 }

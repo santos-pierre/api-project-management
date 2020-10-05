@@ -83,7 +83,7 @@ class ProjectController extends Controller
     private function rules($project = null)
     {
         return [
-            'title' => ['required', 'string', $project ? Rule::unique('projects')->ignore($project->id) : Rule::unique('projects')->where(function ($query) {
+            'title' => ['required', 'string', $project ? Rule::unique('projects')->ignore($project) : Rule::unique('projects')->where(function ($query) {
                 return $query->where('author', auth()->user()->id);
             }), 'max:255'],
             'description' => 'nullable',
