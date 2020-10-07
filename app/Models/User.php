@@ -2,15 +2,16 @@
 
 namespace App\Models;
 
+use App\Traits\HasProfilePhoto;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasApiTokens, HasFactory;
+    use Notifiable, HasApiTokens, HasFactory, HasProfilePhoto;
 
     /**
      * The attributes that are mass assignable.
@@ -18,7 +19,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'profile_photo_path'
     ];
 
     /**
@@ -48,4 +49,13 @@ class User extends Authenticatable
     {
         return $this->hasMany(Task::class, 'author', 'id');
     }
+
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'profile_photo_url',
+    ];
 }

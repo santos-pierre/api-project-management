@@ -28,21 +28,5 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('/project', function () {
-    return ProjectResource::collection(Project::all());
-});
-
-Route::get('/user', function () {
-    return UserResource::collection(User::all());
-});
-
-Route::get('/tasks', function () {
-    return TaskResource::collection(Task::all());
-});
-
-Route::get('/task', function () {
-    return new TaskResource(Task::find(1));
-});
-
 Route::post('/user/exist/email', 'FindUserByEmailController');
 Route::post('/register', 'RegisterUserController');
