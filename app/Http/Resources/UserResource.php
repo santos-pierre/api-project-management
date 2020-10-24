@@ -18,6 +18,7 @@ class UserResource extends JsonResource
         return [
             'name' => Str::of($this->name)->title()->__toString(),
             'email' => $this->email,
+            'photo' => $this->profile_photo_path ? Str::of(env('APP_URL'))->append($this->profile_photo_path)->__toString() : null
         ];
     }
 }

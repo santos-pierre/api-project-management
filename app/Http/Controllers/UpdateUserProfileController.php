@@ -2,34 +2,37 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
-use Illuminate\Http\UploadedFile;
 
 class UpdateUserProfileController extends Controller
 {
-    public function __invoke(Request $request)
+    public function updateUserInfo(Request $request)
     {
-        if ($request->get('photo')) {
-            echo 'Work';
-        } else {
-            echo 'Not Work';
+        $user = Auth::user();
+        $data = $request->validate([
+            'photo' => 'nullable|image|max:1024',
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
+        ]);
+
+        if ($request->hasFile('photo')) {
+            $file = $request->file('photo');
+            $name = $file->getClientOriginalName();
+            $path = $file->storeAs('images/profiles', $name);
         }
-        // Validator::make($input, [
-        //     'name' => ['required', 'string', 'max:255'],
-        //     'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore(auth()->user()->id)],
-        //     'photo' => ['nullable', 'image', 'max:1024'],
-        // ])->validateWithBag('updateProfileInformation');
 
-        // if (isset($input['photo'])) {
-        //     auth()->user()->updateProfilePhoto($input['photo']);
-        // }
+        $user->name = $data['name'];
+        $user->email = $data['email'];
+        if ($request->hasFile('photo')) {
+            $user->profile_photo_path = $path;
+        }
 
-        // auth()->user()->forceFill([
-        //     'name' => $input['name'],
-        //     'email' => $input['email'],
-        // ])->save();
-        // return response()->json($input->all());
+
+        $user->save();
+
+        return response(new UserResource($user));
     }
 }
