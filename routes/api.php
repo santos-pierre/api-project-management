@@ -22,5 +22,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('projects', 'ProjectController');
     Route::apiResource('projects/{project}/tasks', 'TaskController');
-    Route::post('/user/profile', 'UpdateUserProfileController@updateUserInfo');
+    Route::post('/user/profile', 'UpdateUserProfileController@updateUserInfo')->name('users.update');
 });

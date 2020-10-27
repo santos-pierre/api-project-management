@@ -51,7 +51,14 @@ test('User can retrieve tasks from a project', function () {
 
     $response
         ->assertStatus(200)
-        ->assertJsonStructure(['data']);
+        ->assertJsonStructure([[
+            'slug',
+            'body',
+            'owner',
+            'project',
+            'done',
+            'id'
+        ]]);
 });
 
 test('User can retrieve a single task from a project', function () {
@@ -66,13 +73,14 @@ test('User can retrieve a single task from a project', function () {
 
     $response
         ->assertStatus(200)
-        ->assertJsonStructure([
-            'data' => [
+        ->assertJsonStructure(
+            [
                 'slug',
                 'body',
                 'owner',
                 'project',
-                'done'
+                'done',
+                'id'
             ]
-        ]);
+        );
 });

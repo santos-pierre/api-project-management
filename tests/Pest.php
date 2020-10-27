@@ -8,3 +8,5 @@ uses(TestCase::class, RefreshDatabase::class)->in('Feature');
 uses()->group('api-project')->in('Feature/Projects');
 
 uses()->group('api-project-task')->in('Feature/Tasks');
+
+uses()->group('api-project-user')->in('Feature/Users');

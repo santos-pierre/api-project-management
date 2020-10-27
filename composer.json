@@ -26,7 +26,8 @@
         "pestphp/pest": "^0.3.1",
         "pestphp/pest-plugin-faker": "^0.3.0",
         "pestphp/pest-plugin-laravel": "^0.3.0",
-        "phpunit/phpunit": "^9.0"
+        "phpunit/phpunit": "^9.0",
+        "spatie/laravel-web-tinker": "^1.7"
     },
     "config": {
         "optimize-autoloader": true,

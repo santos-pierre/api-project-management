@@ -9,8 +9,14 @@ class FindUserByEmailController extends Controller
 {
     public function __invoke(Request $request)
     {
-        return response([
-            'alreadyTaken' => User::where('email', $request->email)->exists()
-        ], 200);
+        if (auth()->user()) {
+            return response([
+                'alreadyTaken' => User::where('id', '!=', auth()->user()->id)->where('email', $request->email)->exists()
+            ], 200);
+        } else {
+            return response([
+                'alreadyTaken' => User::where('email', $request->email)->exists()
+            ], 200);
+        }
     }
 }
