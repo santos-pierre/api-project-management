@@ -25,10 +25,13 @@ class UpdateUserProfileController extends Controller
             $file = $request->file('photo');
             $img = Image::make($file);
             $img->resize(500, 500);
-            $destination = public_path('images/profiles/');
+            $destination = public_path('storage/images/profiles/');
+            if (!file_exists($destination)) {
+                mkdir($destination, 755, true);
+            }
             $rand = time() . Str::random(6) . date('h-i-s') . '.' . $file->extension();
             $img->save($destination . $rand);
-            $user->profile_photo_path = 'images/profiles/' . $rand;
+            $user->profile_photo_path = 'storage/images/profiles/' . $rand;
         }
 
         $user->name = $data['name'];
