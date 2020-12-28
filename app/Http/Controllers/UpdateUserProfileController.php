@@ -18,7 +18,7 @@ class UpdateUserProfileController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'password' => ['nullable', 'min:8', 'confirmed'],
-            'photo' => ['image', 'max:1024'],
+            'photo' => ['mimes:jpg,png', 'max:1024'],
         ]);
 
         if ($request->hasFile('photo')) {
