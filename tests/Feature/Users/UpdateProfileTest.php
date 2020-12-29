@@ -3,6 +3,7 @@
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
 use Laravel\Sanctum\Sanctum;
 
 beforeEach(function () {
@@ -23,7 +24,8 @@ test('guest cannot update', function () {
         ->assertStatus(401)
         ->assertJSon([
             'message' => 'Unauthenticated.'
-        ]);;
+        ]);
+    ;
 });
 
 test('user can update his profile', function () {
@@ -50,7 +52,8 @@ test('user can update his profile', function () {
             'name' => 'Hello',
             'email' => 'mynewemail@gmail.com',
             'photo' => Str::of(env('APP_URL'))->append($this->user->profile_photo_path)->__toString()
-        ]);;
+        ]);
+    ;
 });
 
 test('user cannot update his profile with an empty name', function () {

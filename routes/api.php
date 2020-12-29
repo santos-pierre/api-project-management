@@ -23,4 +23,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('projects', 'ProjectController');
     Route::apiResource('projects/{project}/tasks', 'TaskController');
     Route::post('/user/profile', 'UpdateUserProfileController@updateUserInfo')->name('users.update');
+    Route::get('/github/commits', 'Github\GithubControllerController@commits')->name('github.commits');
+    Route::get('/github/branchs', 'Github\GithubControllerController@branchs')->name('github.branchs');
 });
