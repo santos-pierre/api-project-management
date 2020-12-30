@@ -8,43 +8,53 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 
-class GithubControllerController extends Controller
+class GithubController extends Controller
 {
     public function commits(Request $request)
     {
-        isset($request->branch) ? $request->branch : $request->branch = 'master';
-        $path = Str::of(parse_url($request->url)['path'])->ltrim('/');
-        $info = [
-            'owner' => explode('/', $path)[0],
-            'repo' => explode('/', $path)[1]
-        ];
+        $info = $this->parseUrl($request->url);
+        $branches = $this->branches($request->url);
+        $commitsByBranches = collect([]);
+        foreach ($branches as $key => $branche) {
+            $commits = Http::get('https://api.github.com/repos/'.$info['owner'].'/'.$info['repo'].'/commits', [
+                'per_page' => 5,
+                'sha' => $branche['name']
+            ])->json();
+            $commitsByBranches->put($branche['name'], $this->formatCommit($commits));
+        }
 
-        $response = Http::get('https://api.github.com/repos/'.$info['owner'].'/'.$info['repo'].'/commits', [
-            'per_page' => 5,
-            'sha' => $request->branch
-        ])->json();
-
-        return $this->formatCommit($response);
+        return $commitsByBranches;
     }
 
-    public function branches(Request $request)
+    private function branches($url)
     {
-        $path = Str::of(parse_url($request->url)['path'])->ltrim('/');
-        $info = [
+        $info = $this->parseUrl($url);
+        $defaultBranch = Http::get('https://api.github.com/repos/'.$info['owner'].'/'.$info['repo'])->json()['default_branch'];
+        $response = Http::get('https://api.github.com/repos/'.$info['owner'].'/'.$info['repo'].'/branches')->json();
+
+        return collect($response)->map(function ($branch) use ($defaultBranch) {
+            return [
+                'name' => $branch['name'],
+                'default' => $branch['name'] === $defaultBranch,
+            ];
+        })->sortByDesc('default');
+    }
+
+    private function parseUrl($url)
+    {
+        $path = Str::of(parse_url($url)['path'])->ltrim('/');
+        return [
             'owner' => explode('/', $path)[0],
             'repo' => explode('/', $path)[1]
         ];
-        $response = Http::get('https://api.github.com/repos/'.$info['owner'].'/'.$info['repo'])->json();
-
-        return $response;
     }
 
     private function formatCommit($commits)
     {
         if (isset($commits['message'])) {
-            return response($commits['message'], 404); // Commits Not foud
+            return collect([]); // Commits Not foud
         } else {
-            return response(collect($commits)->map(function ($commit) {
+            return collect($commits)->map(function ($commit) {
                 return [
                             'name' => $commit['commit']['author']['name'],
                             'email' => $commit['commit']['author']['email'],
@@ -52,7 +62,7 @@ class GithubControllerController extends Controller
                             'url' => $commit['html_url'],
                             'message' => $commit['commit']['message'],
                         ];
-            })->toArray(), 200);
+            });
         }
     }
 }
