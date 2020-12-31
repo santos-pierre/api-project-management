@@ -18,7 +18,22 @@ class UserResource extends JsonResource
         return [
             'name' => Str::of($this->name)->title()->__toString(),
             'email' => $this->email,
-            'photo' => $this->profile_photo_path ? Str::of(env('APP_URL'))->append($this->profile_photo_path)->__toString() : null
+            'photo' => $this->parsePhotoUrl($this->profile_photo_path)
         ];
+    }
+
+    protected function parsePhotoUrl($url)
+    {
+        if (is_null($this->profile_photo_path)) {
+            return null;
+        }
+
+        if (Str::of($url)->contains('github')) {
+            return $this->profile_photo_path;
+        }
+
+        if ($this->profile_photo_path) {
+            return Str::of(env('APP_URL'))->append($this->profile_photo_path)->__toString();
+        }
     }
 }

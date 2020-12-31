@@ -1,13 +1,10 @@
 <?php
 
-use App\Models\User;
-use App\Models\Project;
-use App\Http\Resources\UserResource;
+use App\Http\Controllers\FindUserByEmailController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\RegisterUserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Resources\ProjectResource;
-use App\Http\Resources\TaskResource;
-use App\Models\Task;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,7 +23,7 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-Route::post('/user/exist/email', 'FindUserByEmailController');
-Route::post('/register', 'RegisterUserController');
+Route::post('/user/exist/email', FindUserByEmailController::class);
+Route::post('/register', RegisterUserController::class);
