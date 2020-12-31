@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
 use GuzzleHttp\Exception\ClientException;
@@ -60,7 +61,7 @@ class LoginController extends Controller
 
         return response()->json(
             [
-            'user' => $user,
+            'user' => new UserResource($user),
             'sanctum_access_token' => $user->createToken($user->email.'_sanctum_access')->plainTextToken
             ],
             200
@@ -118,7 +119,7 @@ class LoginController extends Controller
 
         return response()->json(
             [
-            'user' => $userCreated,
+            'user' => new UserResource($userCreated),
             'github_access_token' => $githubTokenAccess,
             'sanctum_access_token' => $sanctumTokenAccess
             ],
