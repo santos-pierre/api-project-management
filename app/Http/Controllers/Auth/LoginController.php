@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Providers\RouteServiceProvider;
-use GuzzleHttp\Exception\ClientException;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
+use GuzzleHttp\Exception\ClientException;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller
 {
@@ -39,6 +41,37 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (! $user || ! Hash::check($request->password, $user->password)) {
+            throw ValidationException::withMessages([
+                'email' => ['The provided credentials are incorrect.'],
+            ]);
+        }
+
+        return response()->json(
+            [
+            'user' => $user,
+            'sanctum_access_token' => $user->createToken($user->email.'_sanctum_access')->plainTextToken
+            ],
+            200
+        );
+    }
+
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+
+        return response('logout', 201);
     }
 
     public function redirectToProvider($provider)
@@ -80,14 +113,14 @@ class LoginController extends Controller
                 'provider_id' => $user->getId()
             ]
         );
-        $githubTokenAccess = $userCreated->createToken($provider.'-access')->plainTextToken;
-        $sanctumTokenAccess = $userCreated->createToken('sanctum-access')->plainTextToken;
+        $githubTokenAccess = $userCreated->createToken($provider.'_access')->plainTextToken;
+        $sanctumTokenAccess = $userCreated->createToken('sanctum_access')->plainTextToken;
 
         return response()->json(
             [
             'user' => $userCreated,
-            'github-access-token' => $githubTokenAccess,
-            'sanctum-access-token' => $sanctumTokenAccess
+            'github_access_token' => $githubTokenAccess,
+            'sanctum_access_token' => $sanctumTokenAccess
             ],
             200
         );

@@ -21,9 +21,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
+// Auth::routes();
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
-
-Route::post('/user/exist/email', FindUserByEmailController::class);
-Route::post('/register', RegisterUserController::class);
