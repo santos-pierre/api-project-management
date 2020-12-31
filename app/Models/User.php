@@ -50,6 +50,11 @@ class User extends Authenticatable
         return $this->hasMany(Task::class, 'author', 'id');
     }
 
+    public function providers()
+    {
+        return $this->hasMany(Provider::class, 'user_id', 'id');
+    }
+
     /**
      * The accessors to append to the model's array form.
      *
