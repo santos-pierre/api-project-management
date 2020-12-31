@@ -12,8 +12,10 @@ class GithubController extends Controller
 {
     public function commits(Request $request)
     {
-        $info = $this->parseUrl($request->url);
-        $branches = $this->branches($request->url);
+        $url = urldecode($request->url);
+        $info = $this->parseUrl($url);
+        $branches = $this->branches($url);
+        return $branches;
         $commitsByBranches = collect([]);
         foreach ($branches as $key => $branche) {
             $commits = Http::get('https://api.github.com/repos/'.$info['owner'].'/'.$info['repo'].'/commits', [
@@ -29,7 +31,8 @@ class GithubController extends Controller
     private function branches($url)
     {
         $info = $this->parseUrl($url);
-        $defaultBranch = Http::get('https://api.github.com/repos/'.$info['owner'].'/'.$info['repo'])->json()['default_branch'];
+        $defaultBranch = Http::get('https://api.github.com/repos/'.$info['owner'].'/'.$info['repo'])->json();
+        return $defaultBranch;
         $response = Http::get('https://api.github.com/repos/'.$info['owner'].'/'.$info['repo'].'/branches')->json();
 
         return collect($response)->map(function ($branch) use ($defaultBranch) {
