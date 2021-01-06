@@ -11,6 +11,7 @@ use Laravel\Socialite\Facades\Socialite;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Cookie;
 
 class LoginController extends Controller
 {
@@ -41,7 +42,22 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest')->except('logout');
+        $this->middleware('guest')->except('logout', 'currentUser');
+    }
+
+    public function currentUser(Request $request)
+    {
+        $currentUser = $request->user();
+        if ($currentUser) {
+            return response()->json(
+                [
+                    'user' => new UserResource($currentUser),
+                ],
+                200
+            );
+        } else {
+            return response()->json('user not connected', 401);
+        }
     }
 
     public function login(Request $request)
@@ -72,6 +88,7 @@ class LoginController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
 
+        Cookie::queue(Cookie::forget('SANCTUM_TOKEN'));
         return response('logout', 201);
     }
 
@@ -114,17 +131,13 @@ class LoginController extends Controller
                 'provider_id' => $user->getId()
             ]
         );
-        $githubTokenAccess = $userCreated->createToken($provider.'_access')->plainTextToken;
         $sanctumTokenAccess = $userCreated->createToken('sanctum_access')->plainTextToken;
 
-        return response()->json(
-            [
-            'user' => new UserResource($userCreated),
-            'github_access_token' => $githubTokenAccess,
-            'sanctum_access_token' => $sanctumTokenAccess
-            ],
-            200
-        );
+        $cookies = [
+            cookie()->forever('SANCTUM_TOKEN', $sanctumTokenAccess, null, null, null, false),
+        ];
+
+        return redirect(env('APP_FRONT'))->withCookies($cookies);
     }
 
     protected function validateProvider($provider)

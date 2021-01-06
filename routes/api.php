@@ -10,6 +10,7 @@ use App\Http\Controllers\RegisterUserController;
 use App\Http\Controllers\Github\GithubController;
 use App\Http\Controllers\FindUserByEmailController;
 use App\Http\Controllers\UpdateUserProfileController;
+use Illuminate\Support\Facades\Cookie;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,11 +39,22 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::get('user/exist/email', FindUserByEmailController::class);
 //End Auth Route
 
+//Access Cookies
+Route::get('/cookies/{cookie_name}', function ($cookie_name) {
+    $cookie = Cookie::get($cookie_name);
+    if ($cookie) {
+        return response($cookie, 200);
+    } else {
+        return response('cookie not found', 404);
+    }
+});
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return response(new UserResource($request->user()));
 });
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', [LoginController::class, 'currentUser']);
     Route::apiResource('projects', ProjectController::class);
     Route::apiResource('projects/{project}/tasks', TaskController::class);
     Route::post('/user/profile', [UpdateUserProfileController::class, 'updateUserInfo'])->name('users.update');

@@ -12,6 +12,8 @@ class EncryptCookies extends Middleware
      * @var array
      */
     protected $except = [
-        //
+        'USER_SESSION',
+        'GITHUB_TOKEN',
+        'SANCTUM_TOKEN',
     ];
 }

@@ -18,7 +18,8 @@ class UserResource extends JsonResource
         return [
             'name' => Str::of($this->name)->title()->__toString(),
             'email' => $this->email,
-            'photo' => $this->parsePhotoUrl($this->profile_photo_path)
+            'photo' => $this->parsePhotoUrl($this->profile_photo_path),
+            'github_account' => is_null($this->password),
         ];
     }
 

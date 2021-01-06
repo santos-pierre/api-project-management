@@ -4,6 +4,7 @@ use App\Http\Controllers\FindUserByEmailController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RegisterUserController;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Route;
 
 /*
