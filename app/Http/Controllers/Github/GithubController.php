@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Github;
 
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
@@ -12,12 +11,13 @@ class GithubController extends Controller
 {
     public function commits(Request $request)
     {
-        $url = urldecode($request->url);
-        $info = $this->parseUrl($url);
-        $branches = $this->branches($url);
+        $branches = $this->branches($request->owner, $request->repo);
+        if (is_null($branches)) {
+            return response('Not found', 404);
+        }
         $commitsByBranches = collect([]);
         foreach ($branches as $key => $branche) {
-            $commits = Http::get('https://api.github.com/repos/'.$info['owner'].'/'.$info['repo'].'/commits', [
+            $commits = Http::get('https://api.github.com/repos/'.$request->owner.'/'.$request->repo.'/commits', [
                 'per_page' => 5,
                 'sha' => $branche['name']
             ])->json();
@@ -27,27 +27,21 @@ class GithubController extends Controller
         return $commitsByBranches;
     }
 
-    private function branches($url)
+    private function branches($owner, $repo)
     {
-        $info = $this->parseUrl($url);
-        $defaultBranch = Http::get('https://api.github.com/repos/'.$info['owner'].'/'.$info['repo'])->json()['default_branch'];
-        $response = Http::get('https://api.github.com/repos/'.$info['owner'].'/'.$info['repo'].'/branches')->json();
-
+        $defaultBranch = Http::get('https://api.github.com/repos/'.$owner.'/'.$repo)->json();
+        if (isset($defaultBranch['default_branch'])) {
+            $defaultBranch = $defaultBranch['default_branch'];
+        } else {
+            return null;
+        }
+        $response = Http::get('https://api.github.com/repos/'.$owner.'/'.$repo.'/branches')->json();
         return collect($response)->map(function ($branch) use ($defaultBranch) {
             return [
                 'name' => $branch['name'],
                 'default' => $branch['name'] === $defaultBranch,
             ];
         })->sortByDesc('default');
-    }
-
-    private function parseUrl($url)
-    {
-        $path = Str::of(parse_url($url)['path'])->ltrim('/');
-        return [
-            'owner' => explode('/', $path)[0],
-            'repo' => explode('/', $path)[1]
-        ];
     }
 
     private function formatCommit($commits)
